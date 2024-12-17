@@ -1,5 +1,5 @@
 from handlers import fileHandler
-
+from handlers import csvHandler
 
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
@@ -43,7 +43,7 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
-                saveDataToFile(dataArr, filePath)
+                saveArrayToFile(dataArr, filePath)
                 file.close()
             case "append":
                 print("append selected")
@@ -160,7 +160,7 @@ def updateLineAndInsert(jsonDict: dict):
     jsonDict[key] = updatedValue
     # convertBackToString
     dataArr: [] = convertDictToJArr(jsonDict)
-
+    print("atestooooo", dataArr)
     updatedString = "{" + ",".join(dataArr) + "}"
     return updatedString
 
@@ -187,7 +187,7 @@ def convertDictToJArr(jsonDict: dict):
     return dataArr
 
 
-def saveDataToFile(dataArr: [], filePath: str):
+def saveArrayToFile(dataArr: [str], filePath: str):
     print("saving process starting")
     file = open(filePath, 'w')
     dataLen = len(dataArr) - 1
