@@ -1,3 +1,6 @@
+from handlers import fileHandler
+
+
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
 
@@ -13,10 +16,17 @@ def modusHandler(filePath: str, modus: str):
             readAndWrite(filePath, modus)
         case "w+":
             print("File will be cleared and overwritten")
+            choice: str = input(f"Are you sure about this operation?\n"
+                                f"File content will be deleted for good!\n"
+                                f"yes or no?\n> ")
+            match choice:
+                case "yes":
+                    writeAndRead(filePath, modus)
+                case "no":
+                    fileHandler.openFile(filePath)
 
 
 def readAndWrite(filePath: str, modus: str):
-    choice: str = ""
     valid = False
     while not valid:
         choice: str = askUserForChoice()
@@ -37,7 +47,11 @@ def readAndWrite(filePath: str, modus: str):
                 file.close()
             case "append":
                 print("append selected")
-        pass
+                file = open(filePath, 'a')
+                contentToAdd: str = input(
+                    f"For json Format use \"{{\"key\":\"value\"}}\"\n> ")
+                file.write(f", {contentToAdd}")
+                file.close()
 
 
 def read(filePath: str, modus):
@@ -49,7 +63,6 @@ def read(filePath: str, modus):
 
 
 def adjustFormat(content: str):
-    # removes special chars if incoming json has bad format
     return content.replace("\n", "").replace("[", "").replace("]", "").replace(
         " ", "").replace("\\", "")
 
@@ -108,7 +121,8 @@ def askForLineNumber(dataArr: []):
                     print("\n Selected number was not valid\n")
             except ValueError:
                 print("Please enter a valid number.")
-        inputUser = input("Which line do you want to change?\nInsert number"
+        inputUser = input("Which line do you want to change?\n"
+                          "Insert number\n"
                           "> ")
     return number
 
@@ -172,6 +186,7 @@ def convertDictToJArr(jsonDict: dict):
 
     return dataArr
 
+
 def saveDataToFile(dataArr: [], filePath: str):
     print("saving process starting")
     file = open(filePath, 'w')
@@ -183,6 +198,16 @@ def saveDataToFile(dataArr: [], filePath: str):
             file.write(f"{item},")
         else:
             file.write(f"{item}")
+
+
+def writeAndRead(filePath: str, modus: str):
+    file = open(filePath, modus)
+    content: str = input(
+        f"Enter new content. Content will overwrite current file.\n"
+        f"For json Format use \"{{\"key\":\"value\"}}\"\n> ")
+    file.write(f"{content}")
+    file.close()
+
 
 class csvHandler:
     def __init__(self):
