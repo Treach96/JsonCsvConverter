@@ -66,20 +66,22 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr, dataArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
-                saveArrayToFile(dataArr, filePath)
-                # file.close()
+                saveDict: [dict] = csvArrayToDict(dataArr)
+                test1: [] = convertDictToCsvArray(saveDict)
+                transformToCsvAndSave(dataArr, filePath)
+                file.close()
             case "append":
                 print("append selected")
                 file = open(filePath, modus)
                 content = file.read()
                 dataArr: [] = createDataArray(content)
-
-                print(content)
                 contentToAdd: str = input(
                     f"Header of Csv:\n {dataArr[0]}\nEnter your content:\n> ")
 
                 file.write(f"\n{contentToAdd.replace(" ", "")}")
                 file.close()
+            case "exit":
+                fileHandler.openFile(filePath)
 
 
 def askUserForChoice():
@@ -95,7 +97,7 @@ def askUserForChoice():
         case "2" | "append":
             return "append"
         case "3" | "exit":
-            exit()
+            return "exit"
 
 
 def askForLineNumber(dataArr: []):
@@ -142,10 +144,9 @@ def updateLineAndInsert(csvDict: dict):
     updatedValue = input("Please enter new Value\n> ")
     csvDict[key] = updatedValue
     # convertBackToString
-    dataArr: [] = convertDictToCArr(csvDict)
+    dataArr: [] = convertValuesToArr(csvDict)
 
     updatedString = ",".join(dataArr)
-    print(updatedString)
     return updatedString
 
 
@@ -160,13 +161,13 @@ def askForKey(csvDict: dict):
             return choice
 
 
-def convertDictToCArr(csvDict: dict):
+def convertValuesToArr(csvDict: dict):
     # Add data rows
-    row = []
+    dataArr: [] = []
     for item in csvDict.values():
-        row.append(f'{item}')
+        dataArr.append(f'{item}')
 
-    return row
+    return dataArr
 
 
 def isCastableToInt(value: str):
@@ -177,19 +178,39 @@ def isCastableToInt(value: str):
         return False
 
 
-def saveArrayToFile(dataArr: [str], filePath: str):
+def transformToCsvAndSave(dataArr: [str], filePath: str):
     print("saving process starting")
     file = open(filePath, 'w')
-    print("dataArr: ", dataArr)
     headers: str = dataArr[0]
-    print("head", headers)
     file.write(headers + "\n")
 
     for index, item in enumerate(dataArr[1:]):
         file.write(item + "\n")
-        print(f"saved line {index}")
     file.close()
     print("saving proces completed")
+
+
+def csvArrayToDict(dataArr: []):
+    headers: [] = dataArr[0].split(',')
+
+    dictArray: [] = []
+    for row in dataArr[1:]:
+        values: [] = row.split(',')
+        rowDict: [] = {headers[i]: values[i] for i in range(len(headers))}
+        dictArray.append(rowDict)
+    return dictArray
+
+def convertDictToCsvArray(csvDict: [dict]):
+    dataArr: [] = []
+    # 1x keys filtern und als header setzen
+    # todo: convert dict to csv array
+    for item in csvDict[0].keys():
+        dataArr.append(f'{item}')
+        # convertValuesToArray returns values of single dictonary
+    for itemDict in csvDict:
+       pass
+    print("converted:\n", dataArr)
+    return dataArr
 
 
 class csvHandler:
