@@ -107,6 +107,9 @@ def askUserForChoice():
             return "append"
         case "3" | "exit":
             exit()
+        case _:
+            print("Invalid choice")
+            return askUserForChoice()
 
 
 def askForLineNumber(dataArr: []):

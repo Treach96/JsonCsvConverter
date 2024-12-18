@@ -96,6 +96,9 @@ def askUserForChoice():
             return "append"
         case "3" | "exit":
             return "exit"
+        case _:
+            print("Choice not valid")
+            return askUserForChoice()
 
 
 def askForLineNumber(dataArr: []):
@@ -103,7 +106,6 @@ def askForLineNumber(dataArr: []):
                       "> ")
     arrLength = len(dataArr)
     valid = False
-
     while not valid:
         if not inputUser.strip():
             print("Input cannot be empty")
