@@ -115,6 +115,8 @@ def askForLineNumber(dataArr: []):
     while not valid:
         if not inputUser.strip():
             print("Input cannot be empty")
+        elif inputUser == "exit":
+            exit()
         else:
             try:
                 number = int(inputUser)
@@ -165,7 +167,6 @@ def updateLineAndInsert(jsonDict: dict):
     jsonDict[key] = updatedValue
     # convertBackToString
     dataArr: [] = convertDictToJArr(jsonDict)
-    print("atestooooo", dataArr)
     updatedString = "{" + ",".join(dataArr) + "}"
     return updatedString
 
@@ -214,7 +215,7 @@ def writeAndRead(filePath: str, modus: str):
     file.close()
 
 
-class csvHandler:
+class jsonHandler:
     def __init__(self):
         pass
 
