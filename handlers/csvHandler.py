@@ -11,7 +11,6 @@ def modusHandler(filePath: str, modus: str):
     match modus:
         case "r":
             print("Read Mode activated")
-            # fertig
             read(filePath, modus)
         case "r+":
             print("File can be modified")
@@ -23,8 +22,6 @@ def modusHandler(filePath: str, modus: str):
                                 f"yes or no?\n> ")
             match choice:
                 case "yes":
-                    pass
-
                     writeAndRead(filePath, modus)
                 case "no":
                     fileHandler.openFile(filePath)
@@ -68,6 +65,7 @@ def readAndWrite(filePath: str, modus: str):
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
                 saveDict: [dict] = csvArrayToDict(dataArr)
+                print(saveDict)
                 askForFormatAndSave(saveDict, filePath)
                 file.close()
             case "append":
@@ -242,6 +240,9 @@ def askForFormatAndSave(saveDict: [dict], filePath):
         case "csv":
             csvArr: [str] = convertDictToCsvArray(saveDict)
             transformToCsvAndSave(csvArr, filePath)
+        case "json":
+            #todo implement
+            pass
 
 
 class csvHandler:

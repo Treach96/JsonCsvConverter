@@ -45,6 +45,9 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
+                saveDict: [dict] = jsonArrToDict(dataArr)
+                print(saveDict.items().mapping)
+                askForFormatAndSave(saveDict, filePath)
                 saveArrayToFile(dataArr, filePath)
                 file.close()
             case "append":
@@ -228,47 +231,45 @@ def writeAndRead(filePath: str, modus: str):
     file.close()
 
 
+def jsonArrToDict(jsonDataArr: []):
+    # todo finish
+    newDict: {} = {}
+    listDict: [dict] = []
+    # todo: fix it
+
+    for item in jsonDataArr:
+        tempStr: str = item.strip('{}')
+        tempArr: [str] = tempStr.split(',')
+
+        for itemD in tempArr:
+            key, value = itemD.split(':')
+            key = key.strip('"')
+            key = key.strip("'")
+            if isCastableToInt(value):
+                value = value.strip("'")
+                newDict[key]: dict = value
+                listDict.append(newDict)
+            else:
+                value = value.strip('"')
+                newDict[key]: dict = value
+                listDict.append(newDict)
+
+    return listDict
+
+
+
+
+def askForFormatAndSave(saveDict: [dict], filePath):
+    choice: str = input("In which format do you wan to save?\n json or csv\n> ")
+    match choice:
+        case "csv":
+            csvArr: [str] = csvHandler.convertDictToCsvArray(saveDict)
+            csvHandler.transformToCsvAndSave(csvArr, filePath)
+        case "json":
+            # todo implement
+            pass
+
+
 class jsonHandler:
     def __init__(self):
         pass
-
-
-"""
-def json_to_csv(json_string):
-    # Remove special characters and split the string into individual records
-    json_string = json_string.replace('\n', '').replace('[', '').replace(']', '').replace(' ', '').replace('\\', '')
-    records = json_string.split('},')
-    records = [record + '}' if not record.endswith('}') else record for record in records]
-
-    # Extract headers
-    headers = set()
-    for record in records:
-        items = record.replace('{', '').replace('}', '').split(',')
-        for item in items:
-            key, _ = item.split(':')
-            headers.add(key)
-    headers = list(headers)
-
-    # Create CSV string
-    csv_string = ','.join(headers) + '\n'
-    for record in records:
-        items = record.replace('{', '').replace('}', '').split(',')
-        row = {key: '' for key in headers}
-        for item in items:
-            key, value = item.split(':')
-            row[key] = value
-        csv_string += ','.join(row[key] for key in headers) + '\n'
-
-    return csv_string
-
-# Example usage
-json_string = '''
-[
-    {"name": "John", "age": 30, "city": "New York"},
-    {"name": "Anna", "age": 22, "city": "London"},
-    {"name": "Mike", "age": 32, "city": "Chicago"}
-]
-'''
-csv_string = json_to_csv(json_string)
-print(csv_string)
-"""
