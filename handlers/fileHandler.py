@@ -48,6 +48,49 @@ def modeSwitch(userIn):
         case 3:
             return WRITE_AND_READ_MODUS
         case 4:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             exit()
 
 

@@ -25,7 +25,7 @@ def modusHandler(filePath: str, modus: str):
                 case "yes":
                     pass
 
-                    # writeAndRead(filePath, modus)
+                    writeAndRead(filePath, modus)
                 case "no":
                     fileHandler.openFile(filePath)
 
@@ -68,8 +68,7 @@ def readAndWrite(filePath: str, modus: str):
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
                 saveDict: [dict] = csvArrayToDict(dataArr)
-                test1: [] = convertDictToCsvArray(saveDict)
-                transformToCsvAndSave(dataArr, filePath)
+                askForFormatAndSave(saveDict, filePath)
                 file.close()
             case "append":
                 print("append selected")
@@ -82,7 +81,7 @@ def readAndWrite(filePath: str, modus: str):
                 file.write(f"\n{contentToAdd.replace(" ", "")}")
                 file.close()
             case "exit":
-                fileHandler.openFile(filePath)
+                exit()
 
 
 def askUserForChoice():
@@ -110,6 +109,8 @@ def askForLineNumber(dataArr: []):
     while not valid:
         if not inputUser.strip():
             print("Input cannot be empty")
+        elif inputUser == "exit":
+            exit()
         else:
             try:
                 number = int(inputUser)
@@ -142,11 +143,24 @@ def convertLineToDict(lineToAdjust, dataArr: []):
 def updateLineAndInsert(csvDict: dict):
     # askForKeyAndUpdate
     key = askForKey(csvDict)
-    updatedValue = input("Please enter new Value\n> ")
-    csvDict[key] = updatedValue
+    if key == "id":
+        valid = False
+        while not valid:
+            updatedValue = input("Please enter integer\n> ")
+            if not updatedValue.strip():
+                print("Input cannot be empty")
+            else:
+                try:
+                    valid = isCastableToInt(updatedValue)
+                except ValueError:
+                    print("Input needs to be an integer")
+        csvDict[key] = updatedValue
+    else:
+        updatedValue = input("Please enter new Value\n> ")
+        csvDict[key] = updatedValue
+
     # convertBackToString
     dataArr: [] = convertValuesToArr(csvDict)
-
     updatedString = ",".join(dataArr)
     return updatedString
 
@@ -180,6 +194,7 @@ def isCastableToInt(value: str):
 
 
 def transformToCsvAndSave(dataArr: [str], filePath: str):
+    print(dataArr)
     print("saving process starting")
     file = open(filePath, 'w')
     headers: str = dataArr[0]
@@ -201,17 +216,32 @@ def csvArrayToDict(dataArr: []):
         dictArray.append(rowDict)
     return dictArray
 
+
 def convertDictToCsvArray(csvDict: [dict]):
     dataArr: [] = []
-    # 1x keys filtern und als header setzen
-    # todo: convert dict to csv array
-    for item in csvDict[0].keys():
-        dataArr.append(f'{item}')
-        # convertValuesToArray returns values of single dictonary
+    headers = ','.join(csvDict[0].keys())
+    dataArr.append(headers)
+
     for itemDict in csvDict:
-       pass
-    print("converted:\n", dataArr)
+        row = ','.join(itemDict.values())
+        dataArr.append(row)
     return dataArr
+
+
+def writeAndRead(filePath: str, modus: str):
+    file = open(filePath, modus)
+    content: str = input(
+        f"Enter new content. Content will overwrite current file.\n")
+    file.write(f"{content}")
+    file.close()
+
+
+def askForFormatAndSave(saveDict: [dict], filePath):
+    choice: str = input("In which format do you wan to save?\n json or csv\n> ")
+    match choice:
+        case "csv":
+            csvArr: [str] = convertDictToCsvArray(saveDict)
+            transformToCsvAndSave(csvArr, filePath)
 
 
 class csvHandler:

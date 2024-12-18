@@ -16,6 +16,7 @@ def modusHandler(filePath: str, modus: str):
             print("File can be modified")
             readAndWrite(filePath, modus)
         case "w+":
+            # fertig
             print("File will be cleared and overwritten")
             choice: str = input(f"Are you sure about this operation?\n"
                                 f"File content will be deleted for good!\n"
@@ -111,7 +112,6 @@ def askForLineNumber(dataArr: []):
                       "> ")
     arrLength = len(dataArr)
     valid = False
-
     while not valid:
         if not inputUser.strip():
             print("Input cannot be empty")
@@ -163,8 +163,21 @@ def isCastableToInt(value: str):
 def updateLineAndInsert(jsonDict: dict):
     # askForKeyAndUpdate
     key = askForKey(jsonDict)
-    updatedValue = input("Please enter new Value\n> ")
-    jsonDict[key] = updatedValue
+    if key == "id":
+        valid = False
+        while not valid:
+            updatedValue = input("Please enter integer\n> ")
+            if not updatedValue.strip():
+                print("Input cannot be empty")
+            else:
+                try:
+                    valid = isCastableToInt(updatedValue)
+                except ValueError:
+                    print("Input needs to be an integer")
+        jsonDict[key] = updatedValue
+    else:
+        updatedValue = input("Please enter new Value\n> ")
+        jsonDict[key] = updatedValue
     # convertBackToString
     dataArr: [] = convertDictToJArr(jsonDict)
     updatedString = "{" + ",".join(dataArr) + "}"
