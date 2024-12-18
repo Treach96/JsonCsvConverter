@@ -45,10 +45,8 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
-                saveDict: [dict] = jsonArrToDict(dataArr)
-                print(saveDict.items().mapping)
-                askForFormatAndSave(saveDict, filePath)
-                saveArrayToFile(dataArr, filePath)
+                askForFormatAndSave(dataArr, filePath)
+                # saveArrayToFile(dataArr, filePath)
                 file.close()
             case "append":
                 print("append selected")
@@ -85,6 +83,7 @@ def createDataArray(content: str):
             dataArrComplete.append(item + '}')
         else:
             dataArrComplete.append(item)
+    print("dataArr: ", dataArr)
     return dataArrComplete
 
 
@@ -209,17 +208,19 @@ def convertDictToJArr(jsonDict: dict):
     return dataArr
 
 
-def saveArrayToFile(dataArr: [str], filePath: str):
-    print("saving process starting")
-    file = open(filePath, 'w')
-    dataLen = len(dataArr) - 1
-
-    for index, item in enumerate(dataArr):
-        if index < dataLen:
-            file.write(f"{item},")
-        else:
-            file.write(f"{item}")
-    print("save completed.")
+# def saveArrayToFile(dataArr: [str], filePath: str):
+#     print("saving process starting")
+#     if filePath.endswith('.csv'):
+#         filePath = filePath.replace('.csv', '_fromCsv.json')
+#     file = open(filePath, 'w')
+#     dataLen = len(dataArr) - 1
+#
+#     for index, item in enumerate(dataArr):
+#         if index < dataLen:
+#             file.write(f"{item},")
+#         else:
+#             file.write(f"{item}")
+#     print("save completed.")
 
 
 def writeAndRead(filePath: str, modus: str):
@@ -231,45 +232,35 @@ def writeAndRead(filePath: str, modus: str):
     file.close()
 
 
-def jsonArrToDict(jsonDataArr: []):
-    # todo finish
-    newDict: {} = {}
-    listDict: [dict] = []
-    # todo: fix it
-
-    for item in jsonDataArr:
-        tempStr: str = item.strip('{}')
-        tempArr: [str] = tempStr.split(',')
-
-        for itemD in tempArr:
-            key, value = itemD.split(':')
-            key = key.strip('"')
-            key = key.strip("'")
-            if isCastableToInt(value):
-                value = value.strip("'")
-                newDict[key]: dict = value
-                listDict.append(newDict)
-            else:
-                value = value.strip('"')
-                newDict[key]: dict = value
-                listDict.append(newDict)
-
-    return listDict
-
-
-
-
 def askForFormatAndSave(saveDict: [dict], filePath):
+    print("askForFormatDicT: ", saveDict)
     choice: str = input("In which format do you wan to save?\n json or csv\n> ")
     match choice:
         case "csv":
             csvArr: [str] = csvHandler.convertDictToCsvArray(saveDict)
             csvHandler.transformToCsvAndSave(csvArr, filePath)
         case "json":
-            # todo implement
+            jsonHandler.saveArrayToFile(saveDict, filePath)
+            # {"id":390,"first_name":"Rahel","last_name":"McLae","gender":"Female","street_name":"OldShore"}
             pass
 
 
 class jsonHandler:
     def __init__(self):
         pass
+
+    @classmethod
+    def saveArrayToFile(cls, dataArr, filePath):
+
+        print("saving process starting")
+        if filePath.endswith('.csv'):
+            filePath = filePath.replace('.csv', '_fromCsv.json')
+        file = open(filePath, 'w')
+        dataLen = len(dataArr) - 1
+
+        for index, item in enumerate(dataArr):
+            if index < dataLen:
+                file.write(f"{item},")
+            else:
+                file.write(f"{item}")
+        print("save completed.")
