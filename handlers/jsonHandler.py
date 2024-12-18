@@ -1,6 +1,7 @@
 from handlers import fileHandler
 from handlers import csvHandler
 
+
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
 
@@ -30,13 +31,13 @@ def readAndWrite(filePath: str, modus: str):
     valid = False
     while not valid:
         choice: str = askUserForChoice()
+        file = open(filePath, modus)
+        content: str = file.read()
+        formattedContent: str = adjustFormat(content)
+        dataArr: [] = createDataArray(formattedContent)
         match choice:
             case "change":
                 print("change selected")
-                file = open(filePath, modus)
-                content: str = file.read()
-                formattedContent: str = adjustFormat(content)
-                dataArr: [] = createDataArray(formattedContent)
                 printArrWithLineNumbers(dataArr)
                 number = askForLineNumber(dataArr)
                 lineFromArr: str = dataArr[number]
@@ -48,8 +49,12 @@ def readAndWrite(filePath: str, modus: str):
             case "append":
                 print("append selected")
                 file = open(filePath, 'a')
+                lineDict = convertLineToDict(dataArr[0])
+                listOfKeys = lineDict.keys()
+                print("\nAvailable keys are: [", ', '.join(listOfKeys), "]\n")
                 contentToAdd: str = input(
-                    f"For json Format use \"{{\"key\":\"value\"}}\"\n> ")
+                    f"For json Format use \"{{\"key\":\"value\"}}\""
+                    f"\nEnter content of next line\n> ")
                 file.write(f", {contentToAdd}")
                 file.close()
 
@@ -193,11 +198,11 @@ def saveArrayToFile(dataArr: [str], filePath: str):
     dataLen = len(dataArr) - 1
 
     for index, item in enumerate(dataArr):
-        print(f"saved line {index}")
         if index < dataLen:
             file.write(f"{item},")
         else:
             file.write(f"{item}")
+    print("save completed.")
 
 
 def writeAndRead(filePath: str, modus: str):
