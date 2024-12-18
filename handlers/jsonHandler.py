@@ -1,6 +1,12 @@
 from handlers import fileHandler
-from handlers import csvHandler
+from handlers.saveHelper import saveHelper
 
+
+class jsonHandler:
+    def __init__(self):
+        pass
+
+saver = saveHelper()
 
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
@@ -45,7 +51,7 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
-                askForFormatAndSave(dataArr, filePath)
+                saver.askForFormatAndSave(dataArr, filePath)
                 # saveArrayToFile(dataArr, filePath)
                 file.close()
             case "append":
@@ -235,35 +241,3 @@ def writeAndRead(filePath: str, modus: str):
     file.close()
 
 
-def askForFormatAndSave(saveDict: [dict], filePath):
-    print("askForFormatDicT: ", saveDict)
-    choice: str = input("In which format do you wan to save?\n json or csv\n> ")
-    match choice:
-        case "csv":
-            csvArr: [str] = csvHandler.convertDictToCsvArray(saveDict)
-            csvHandler.transformToCsvAndSave(csvArr, filePath)
-        case "json":
-            jsonHandler.saveArrayToFile(saveDict, filePath)
-            # {"id":390,"first_name":"Rahel","last_name":"McLae","gender":"Female","street_name":"OldShore"}
-            pass
-
-
-class jsonHandler:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def saveArrayToFile(cls, dataArr, filePath):
-
-        print("saving process starting")
-        if filePath.endswith('.csv'):
-            filePath = filePath.replace('.csv', '_fromCsv.json')
-        file = open(filePath, 'w')
-        dataLen = len(dataArr) - 1
-
-        for index, item in enumerate(dataArr):
-            if index < dataLen:
-                file.write(f"{item},")
-            else:
-                file.write(f"{item}")
-        print("save completed.")
