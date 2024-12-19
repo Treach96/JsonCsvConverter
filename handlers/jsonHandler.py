@@ -6,7 +6,9 @@ class jsonHandler:
     def __init__(self):
         pass
 
+
 saver = saveHelper()
+
 
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
@@ -51,8 +53,8 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
-                print("saveDictJson:", dataArr)
-                saver.askForFormatAndSave(dataArr, filePath)
+                saveDict: {} = convertJArrToDict(dataArr)
+                saver.askForFormatAndSave(saveDict, filePath)
                 # saveArrayToFile(dataArr, filePath)
                 file.close()
             case "append":
@@ -90,7 +92,6 @@ def createDataArray(content: str):
             dataArrComplete.append(item + '}')
         else:
             dataArrComplete.append(item)
-    print("dataArr: ", dataArr)
     return dataArrComplete
 
 
@@ -154,15 +155,38 @@ def convertLineToDict(line: str):
     for item in tempArr:
         key, value = item.split(':')
         key = key.strip('"')
-        key = key.strip("'")
         if isCastableToInt(value):
             value = value.strip("'")
         else:
             value = value.strip('"')
         newDict[key]: dict = value
-
     return newDict
-# todo: convert array to dict!
+
+
+def convertJArrToDict(dataArr: []):
+    newDict: {} = {}
+    dictArr: [dict] = []
+    print("convert", dataArr)
+    tempArr = []
+    for item in dataArr:
+        tempStr = item.strip('{}')
+        tempArr = tempStr.split(',')
+        print("Temp:", tempArr)
+        for keyPair in tempArr:
+            key, value = keyPair.split(':')
+            key = key.strip('"')
+            key = key.strip("'")
+            if isCastableToInt(value):
+                value = value.strip("'")
+            else:
+                value = value.strip('"')
+            newDict[key] = value
+        dictArr.append(','.join(newDict))
+            # Problem: Keys werden nur einmal eingefügt und values ausgetauscht = 1 multipler STring
+            # idee: mit .join arbeiten um ['{"key":"value"}] zu generieren!
+        print("dictArrConvertJarr: ", dictArr)
+    return dictArr
+
 
 def isCastableToInt(value: str):
     try:
@@ -190,7 +214,6 @@ def updateLineAndInsert(jsonDict: dict):
     else:
         updatedValue = input("Please enter new Value\n> ")
         jsonDict[key] = updatedValue
-    # convertBackToString
     dataArr: [] = convertDictToJArr(jsonDict)
     updatedString = "{" + ",".join(dataArr) + "}"
     return updatedString
@@ -218,21 +241,6 @@ def convertDictToJArr(jsonDict: dict):
     return dataArr
 
 
-# def saveArrayToFile(dataArr: [str], filePath: str):
-#     print("saving process starting")
-#     if filePath.endswith('.csv'):
-#         filePath = filePath.replace('.csv', '_fromCsv.json')
-#     file = open(filePath, 'w')
-#     dataLen = len(dataArr) - 1
-#
-#     for index, item in enumerate(dataArr):
-#         if index < dataLen:
-#             file.write(f"{item},")
-#         else:
-#             file.write(f"{item}")
-#     print("save completed.")
-
-
 def writeAndRead(filePath: str, modus: str):
     file = open(filePath, modus)
     content: str = input(
@@ -240,5 +248,3 @@ def writeAndRead(filePath: str, modus: str):
         f"For json Format use \"{{\"key\":\"value\"}}\"\n> ")
     file.write(f"{content}")
     file.close()
-
-

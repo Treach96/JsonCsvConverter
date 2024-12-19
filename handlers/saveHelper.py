@@ -9,21 +9,21 @@ class saveHelper:
     """
 
     def askForFormatAndSave(self, saveDict: [dict], filePath):
-        print("askForFormatDicT: ", saveDict)
         choice: str = input("In which format do you wan to save?\n json or csv\n> ")
         match choice:
             case "csv":
                 csvArr: [str] = self.convertDictToCsvArray(saveDict)
                 self.transformToCsvAndSave(csvArr, filePath)
             case "json":
-                self.saveArrayToFile(saveDict, filePath)
+                self.saveArrayAsJsonToFile(saveDict, filePath)
                 # {"id":390,"first_name":"Rahel","last_name":"McLae","gender":"Female","street_name":"OldShore"}
                 pass
 
-    def saveArrayToFile(self, dataArr, filePath):
+    def saveArrayAsJsonToFile(self, dataArr, filePath):
         print("saving process starting")
         if filePath.endswith('.csv'):
             filePath = filePath.replace('.csv', '_fromCsv.json')
+            print("changed name to \"name\"_fromCsv.json")
         file = open(filePath, 'w')
         dataLen = len(dataArr) - 1
 
@@ -36,7 +36,7 @@ class saveHelper:
 
     def convertDictToCsvArray(self, csvDict: [dict]):
         dataArr: [] = []
-        print(csvDict[0])
+        print(csvDict)
         # todo: aray doch nicht als dict konvertiert orden?
 
         headers = ','.join(csvDict[0].keys())
@@ -44,6 +44,7 @@ class saveHelper:
         for itemDict in csvDict:
             row = ','.join(itemDict.values())
             dataArr.append(row)
+        print(dataArr)
         return dataArr
 
 
@@ -51,6 +52,7 @@ class saveHelper:
         print("saving process starting")
         if filePath.endswith('.json'):
             filePath.replace('.json', '_fromJson.csv')
+            print("changed name to \"name\"_fromJson.csv")
         file = open(filePath, 'w')
         headers: str = dataArr[0]
         file.write(headers + "\n")
