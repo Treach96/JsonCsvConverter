@@ -51,6 +51,7 @@ def readAndWrite(filePath: str, modus: str):
                 lineDict: dict = convertLineToDict(lineFromArr)
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
+                print("saveDictJson:", dataArr)
                 saver.askForFormatAndSave(dataArr, filePath)
                 # saveArrayToFile(dataArr, filePath)
                 file.close()
@@ -161,7 +162,7 @@ def convertLineToDict(line: str):
         newDict[key]: dict = value
 
     return newDict
-
+# todo: convert array to dict!
 
 def isCastableToInt(value: str):
     try:

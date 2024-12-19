@@ -2,6 +2,14 @@ from handlers import fileHandler
 from handlers.jsonHandler import jsonHandler
 from typing import List
 
+from handlers.saveHelper import saveHelper
+
+
+class csvHandler:
+    def __init__(self):
+        pass
+
+saver = saveHelper()
 
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
@@ -66,7 +74,7 @@ def readAndWrite(filePath: str, modus: str):
                 printArrWithLineNumbers(dataArr)
                 saveDict: [dict] = csvArrayToDict(dataArr)
                 print("SaveDictFromCs:", saveDict)
-                csvHandler.askForFormatAndSave(saveDict, filePath)
+                saver.askForFormatAndSave(saveDict, filePath)
                 file.close()
             case "append":
                 print("append selected")
@@ -211,42 +219,7 @@ def writeAndRead(filePath: str, modus: str):
     file.close()
 
 
-class csvHandler:
-    def __init__(self):
-        pass
 
-    @classmethod
-    def askForFormatAndSave(cls, saveDict: [dict], filePath):
-        choice: str = input(
-            "In which format do you wan to save?\n json or csv\n> ")
-        match choice:
-            case "csv":
-                csvArr: [str] = csvHandler.convertDictToCsvArray(saveDict)
-                csvHandler.transformToCsvAndSave(csvArr, filePath)
-            case "json":
-                jsonHandler.saveArrayToFile(saveDict, filePath)
 
-    @classmethod
-    def convertDictToCsvArray(cls, csvDict: [dict]):
-        dataArr: [] = []
-        headers = ','.join(csvDict[0].keys())
-        dataArr.append(headers)
-        for itemDict in csvDict:
-            row = ','.join(itemDict.values())
-            dataArr.append(row)
-        return dataArr
 
-    @classmethod
-    def transformToCsvAndSave(cls, dataArr: [str], filePath: str):
-        print("saving process starting")
-        if filePath.endswith('.json'):
-            filePath.replace('.json', '_fromJson.csv')
-        file = open(filePath, 'w')
-        headers: str = dataArr[0]
-        file.write(headers + "\n")
-
-        for index, item in enumerate(dataArr[1:]):
-            file.write(item + "\n")
-        file.close()
-        print("saving proces completed")
 
