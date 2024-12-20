@@ -164,14 +164,13 @@ def convertLineToDict(line: str):
 
 
 def convertJArrToDict(dataArr: []):
-    newDict: {} = {}
     dictArr: [dict] = []
     print("convert", dataArr)
     tempArr = []
     for item in dataArr:
+        newDict: {} = {}
         tempStr = item.strip('{}')
         tempArr = tempStr.split(',')
-        print("Temp:", tempArr)
         for keyPair in tempArr:
             key, value = keyPair.split(':')
             key = key.strip('"')
@@ -181,10 +180,11 @@ def convertJArrToDict(dataArr: []):
             else:
                 value = value.strip('"')
             newDict[key] = value
-        dictArr.append(','.join(newDict))
-            # Problem: Keys werden nur einmal eingefügt und values ausgetauscht = 1 multipler STring
-            # idee: mit .join arbeiten um ['{"key":"value"}] zu generieren!
-        print("dictArrConvertJarr: ", dictArr)
+        dictArr.append(newDict)
+        print("ditarr in prog", dictArr)
+        # Problem: Keys werden nur einmal eingefügt und values ausgetauscht = 1 multipler STring
+        # idee: mit .join arbeiten um ['{"key":"value"}] zu generieren!
+    print("dictArrConvertJarr: ", dictArr)
     return dictArr
 
 

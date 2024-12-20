@@ -9,15 +9,39 @@ class saveHelper:
     """
 
     def askForFormatAndSave(self, saveDict: [dict], filePath):
+
         choice: str = input("In which format do you wan to save?\n json or csv\n> ")
         match choice:
             case "csv":
                 csvArr: [str] = self.convertDictToCsvArray(saveDict)
                 self.transformToCsvAndSave(csvArr, filePath)
             case "json":
-                self.saveArrayAsJsonToFile(saveDict, filePath)
+                jsonArr: [str] = self.convertDictToJsonArray(saveDict)#
+                print(jsonArr)
+               # self.saveArrayAsJsonToFile(saveDict, filePath)
                 # {"id":390,"first_name":"Rahel","last_name":"McLae","gender":"Female","street_name":"OldShore"}
                 pass
+
+    def convertDictToJsonArray(self, saveDict: [dict]):
+        dataArr: [] = []
+        for item in saveDict:
+            jsonStr = "{"
+            for key, value in item.items():
+                if self.isCastableToInt(value):
+                    jsonStr += f'"{key}":{value},'
+                else:
+                    jsonStr += f'"{key}":"{value}",'
+            jsonStr = jsonStr.rstrip(',') + "}"
+            dataArr.append(jsonStr)
+
+        return dataArr
+
+    def isCastableToInt(self, value: str):
+        try:
+            int(value)
+            return True
+        except ValueError:
+            return False
 
     def saveArrayAsJsonToFile(self, dataArr, filePath):
         print("saving process starting")
