@@ -1,5 +1,4 @@
 from handlers import fileHandler
-from handlers.jsonHandler import jsonHandler
 from typing import List
 
 from handlers.saveHelper import saveHelper
@@ -9,7 +8,9 @@ class csvHandler:
     def __init__(self):
         pass
 
+
 saver = saveHelper()
+
 
 def useFile(filePath: str, modus: str):
     modusHandler(filePath, modus)
@@ -73,7 +74,6 @@ def readAndWrite(filePath: str, modus: str):
                 dataArr[number] = updateLineAndInsert(lineDict)
                 printArrWithLineNumbers(dataArr)
                 saveDict: [dict] = csvArrayToDict(dataArr)
-                print("SaveDictFromCs:", saveDict)
                 saver.askForFormatAndSave(saveDict, filePath)
                 file.close()
             case "append":
@@ -217,9 +217,3 @@ def writeAndRead(filePath: str, modus: str):
         f"Enter new content. Content will overwrite current file.\n")
     file.write(f"{content}")
     file.close()
-
-
-
-
-
-
